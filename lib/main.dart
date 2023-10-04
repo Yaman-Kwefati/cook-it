@@ -3,8 +3,12 @@ import 'package:cook_it/screens/login_screen.dart';
 import 'package:cook_it/screens/registration_screen.dart';
 import 'package:cook_it/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(CookIt());
 }
 
