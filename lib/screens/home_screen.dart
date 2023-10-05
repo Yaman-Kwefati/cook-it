@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cook_it/screens_components/home_screen_floation_action_button.dart';
 import 'package:cook_it/screens_components/home_text_row.dart';
 import 'package:cook_it/screens_components/recipe_post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: HomeScreenFloationAction(),
       appBar: AppBar(
         title: Text(
           "CookIt",
