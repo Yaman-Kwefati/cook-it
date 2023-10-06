@@ -52,14 +52,17 @@ class RecipesStream extends StatelessWidget {
             final recipeInstructions = recipeData["instructions"];
             final recipeName = recipeData["name"];
             final recipePreparation = recipeData["preparation"];
+            final recipeOwner = recipeData["owner"];
             final recipePost = RecipePost(
-                recipeDescription: recipeDescription,
-                recipeDifficulty: recipeDifficulty,
-                recipeTimesFavorited: recipeTimesFavorited,
-                recipeImage: recipeImage,
-                recipeInstructions: recipeInstructions,
-                recipeName: recipeName,
-                recipePreparation: recipePreparation);
+              recipeDescription: recipeDescription,
+              recipeDifficulty: recipeDifficulty,
+              recipeTimesFavorited: recipeTimesFavorited,
+              recipeImage: recipeImage,
+              recipeInstructions: recipeInstructions,
+              recipeName: recipeName,
+              recipePreparation: recipePreparation,
+              recipeOwner: recipeOwner,
+            );
             recipePosts.add(recipePost);
           }
           return ListView(
