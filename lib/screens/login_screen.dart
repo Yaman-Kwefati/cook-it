@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cook_it/screens/home_screen.dart';
+import 'package:cook_it/screens/recipe_stream.dart';
+import 'package:cook_it/screens/main_screen.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
@@ -25,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
       if (credential != null) {
-        Navigator.pushNamed(context, HomeScreen.id);
+        Navigator.pushNamed(context, MainScreen.id);
       }
       setState(() {
         _showSpinner = false;

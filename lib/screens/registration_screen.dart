@@ -1,5 +1,6 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cook_it/screens/home_screen.dart';
+import 'package:cook_it/screens/recipe_stream.dart';
+import 'package:cook_it/screens/main_screen.dart';
 import 'package:cook_it/screens_components/rounded_button.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       final newUser = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       if (newUser != null) {
-        Navigator.pushNamed(context, HomeScreen.id);
+        Navigator.pushNamed(context, MainScreen.id);
       }
       setState(() {
         _showSpinner = false;
