@@ -1,3 +1,4 @@
+import 'package:cook_it/screens/add_recipe_screen.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,8 @@ class HomeScreenFloationAction extends StatelessWidget {
           Icons.add,
           size: 40.0,
         ),
-        onPressed: () {});
+        onPressed: () {
+          Navigator.pushNamed(context, AddRecipeScreen.id);
+        });
   }
 }

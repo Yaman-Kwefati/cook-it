@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
-class FavoriteRecipePost extends StatelessWidget {
-  FavoriteRecipePost(
+class HomeRecipePost extends StatelessWidget {
+  HomeRecipePost(
       {required this.recipeDescription,
       required this.recipeDifficulty,
       required this.recipeTimesFavorited,
@@ -14,7 +14,8 @@ class FavoriteRecipePost extends StatelessWidget {
       required this.recipeInstructions,
       required this.recipeName,
       required this.recipePreparation,
-      required this.recipeOwner});
+      required this.recipeOwner,
+      required this.recipeId});
 
   final recipeDescription;
   final recipeDifficulty;
@@ -24,6 +25,7 @@ class FavoriteRecipePost extends StatelessWidget {
   final recipeName;
   final recipePreparation;
   final recipeOwner;
+  final recipeId;
 
   void _showModal(BuildContext context) {
     late Color iconColor = Colors.black;
@@ -43,6 +45,7 @@ class FavoriteRecipePost extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 )),
             isTopBarLayerAlwaysVisible: true,
+            leadingNavBarWidget: HeartIconButton(recipeId: recipeId),
             trailingNavBarWidget: IconButton(
               icon: CircleAvatar(
                 child: Icon(
@@ -78,7 +81,7 @@ class FavoriteRecipePost extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Owner:"),
+                          Text("User: "),
                           Text("$recipeOwner"),
                         ],
                       ),
@@ -92,6 +95,29 @@ class FavoriteRecipePost extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 16.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Rating:'),
+                      IgnorePointer(
+                        child: RatingBar.builder(
+                          itemSize: 25.0,
+                          updateOnDrag: false,
+                          initialRating: recipeTimesFavorited,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (v) {},
+                        ),
+                      ),
+                    ],
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       // Handle the "Cook it" button tap
@@ -130,88 +156,41 @@ class FavoriteRecipePost extends StatelessWidget {
       },
       child: Material(
         elevation: 7.0,
+        borderRadius: BorderRadius.circular(5.0),
+        color: Color(0xFFF4F7F9),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
+          child: Row(
             children: [
               Container(
-                width: double.infinity, // your desired width
-                height: 240, // your desired height
-                child: ClipRect(
-                  child: FittedBox(
-                    fit: BoxFit.cover,
-                    child: recipeImage,
-                  ),
-                ),
+                height: 85,
+                child: recipeImage,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "User: yamankwefati",
-                      style: TextStyle(fontSize: 18.0),
+                      recipeName,
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    RichText(
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        children: [
-                          TextSpan(
-                              text: 'Time: $recipeDifficulty m',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: Colors.black,
-                              )),
-                          WidgetSpan(
-                            baseline: TextBaseline.alphabetic,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Icon(
-                                Icons.timer,
-                                color: Colors.black,
-                                size:
-                                    20.0, // You might want to adjust this size as needed
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                    SizedBox(height: 5),
+                    Text(
+                      recipeDescription,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(), // Apply any style you want
                     ),
+                    Text("Read more", style: TextStyle(color: Colors.blue)),
+                    SizedBox(height: 5),
+                    Text(recipeOwner),
                   ],
                 ),
               ),
-              Divider(),
-              Text("$recipeDescription"),
-              Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Rating:'),
-                  IgnorePointer(
-                    child: RatingBar.builder(
-                      itemSize: 25.0,
-                      updateOnDrag: false,
-                      initialRating: recipeTimesFavorited,
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                      itemBuilder: (context, _) => Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (v) {},
-                    ),
-                  ),
-                ],
-              )
             ],
           ),
         ),
-        color: Color(0xFFF4F7F9),
-        borderRadius: BorderRadius.circular(5.0),
       ),
     );
   }

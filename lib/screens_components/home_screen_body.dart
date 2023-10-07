@@ -1,4 +1,5 @@
 import 'package:cook_it/screens/recipe_stream.dart';
+import 'package:cook_it/screens_components/home_recipe_stream.dart';
 import 'package:cook_it/screens_components/home_text_row.dart';
 import 'package:flutter/material.dart';
 
@@ -46,8 +47,8 @@ class HomeScreenBody extends StatelessWidget {
             function: () {},
           ),
           Expanded(
-            flex: 18,
-            child: RecipesStream(),
+            flex: 17,
+            child: HomeRecipesStream(),
           ),
         ],
       ),
