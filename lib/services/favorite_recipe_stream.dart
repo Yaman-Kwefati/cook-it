@@ -51,7 +51,7 @@ class RecipesStream extends StatelessWidget {
 
           return FutureBuilder<QuerySnapshot>(
             future: db
-                .collection("recipes")
+                .collection("recipes" ?? "popularRecipes")
                 .where(FieldPath.documentId, whereIn: favoritedRecipesIds)
                 .get(),
             builder: (context, snapshot) {
@@ -82,6 +82,7 @@ class RecipesStream extends StatelessWidget {
                 final recipeOwner = recipeData["owner"];
 
                 final recipePost = FavoriteRecipePost(
+                  recipeId: recipe.id,
                   recipeDescription: recipeDescription,
                   recipeDifficulty: recipeDifficulty,
                   recipeTimesFavorited: recipeTimesFavorited,

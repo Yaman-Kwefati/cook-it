@@ -1,5 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cook_it/screens/recipe_stream.dart';
+import 'package:cook_it/services/favorite_recipe_stream.dart';
 import 'package:cook_it/screens/main_screen.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:flutter/material.dart';
@@ -72,7 +72,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  //Do something with the user input.
                   email = value;
                 },
                 decoration:
@@ -83,7 +82,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  //Do something with the user input.
                   password = value;
                 },
                 decoration: kTextFieldDecoration.copyWith(

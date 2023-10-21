@@ -1,4 +1,4 @@
-import 'package:cook_it/screens/recipe_stream.dart';
+import 'package:cook_it/services/favorite_recipe_stream.dart';
 import 'package:flutter/material.dart';
 
 class FavoriteSreenBody extends StatelessWidget {

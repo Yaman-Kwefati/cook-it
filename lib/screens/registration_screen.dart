@@ -1,5 +1,5 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cook_it/screens/recipe_stream.dart';
+import 'package:cook_it/services/favorite_recipe_stream.dart';
 import 'package:cook_it/screens/main_screen.dart';
 import 'package:cook_it/screens_components/rounded_button.dart';
 import 'package:cook_it/screens_constants.dart';

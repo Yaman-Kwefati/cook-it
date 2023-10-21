@@ -1,3 +1,5 @@
+import 'package:cook_it/models/recipe.dart';
+import 'package:cook_it/screens/recipe_screen.dart';
 import 'package:cook_it/screens_components/icons_widgets.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -120,7 +122,22 @@ class HomeRecipePost extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Handle the "Cook it" button tap
+                      Recipe recipe = Recipe(
+                          recipeDescription: recipeDescription,
+                          recipeDifficulty: recipeDifficulty,
+                          recipeImageUrl: recipeImage,
+                          recipeInstructions: recipeInstructions,
+                          recipePreparation: recipePreparation,
+                          recipeOwner: recipeOwner,
+                          recipeName: recipeName,
+                          recipeTimesFavorited: recipeTimesFavorited,
+                          recipeId: recipeId);
+                      Navigator.of(modalSheetContext).pop();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  RecipeScreen(recipe: recipe)));
                     },
                     child: Text('Cook it'),
                     style: ElevatedButton.styleFrom(

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cook_it/screens_components/picker.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   String? imageUrl;
   double? recipeFavorited;
   String? userId;
+  String? recipeCategory;
 
   Future<String> getCurrentUserName() async {
     final user = db.collection("users").doc(auth.currentUser!.uid);
@@ -37,7 +39,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       return "$firstName $lastName";
     } catch (e) {
       print("Error getting document: $e");
-      return "Error fetching name"; // You might want to handle this differently.
+      return "Error fetching name";
     }
   }
 
@@ -72,11 +74,12 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
       "instructions": _instructions,
       "preparation": _preparations,
       "userId": auth.currentUser!.uid,
-      "owner": recipeOwner
+      "owner": recipeOwner,
+      "category": recipeCategory,
     };
 
     try {
-      await db.collection("recipes").add(recipe);
+      await db.collection("popularRecipes").add(recipe);
       print("Recipe added successfully.");
     } catch (error) {
       print("Error adding recipe: $error");
@@ -129,75 +132,100 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     Navigator.pop(context);
   }
 
+  Widget getPicker() {
+    if (Platform.isIOS) {
+      return IosPicker(
+        onCategorySelected: (selectedCategory) {
+          setState(() {
+            recipeCategory = selectedCategory;
+          });
+        },
+      );
+    } else {
+      return AndroidPicker(
+        onCategorySelected: (selectedCategory) {
+          setState(() {
+            recipeCategory = selectedCategory;
+          });
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: true,
-      bottom: false,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("RecipeName:"),
-                TextField(
-                  onChanged: (value) {
-                    recipeName = value;
-                  },
-                  decoration: kTextFieldDecoration,
-                ),
-                SizedBox(height: 10.0),
-                Text("Description:"),
-                TextField(
-                  onChanged: (value) {
-                    recipeDescription = value;
-                  },
-                  decoration: kTextFieldDecoration,
-                ),
-                SizedBox(height: 10.0),
-                Text("Difficulty: "),
-                TextField(
-                  onChanged: (value) {
-                    recipeDifficulty = int.parse(value);
-                  },
-                  decoration: kTextFieldDecoration,
-                ),
-                SizedBox(height: 10.0),
-                Text("Image: "),
-                if (_image != null) Image.file(_image!),
-                ElevatedButton(
-                  onPressed: _pickImage,
-                  child: Text("Pick an Image"),
-                ),
-                SizedBox(height: 10.0),
-                Text("Instructions: "),
-                ..._instructions.asMap().entries.map((entry) {
-                  int idx = entry.key;
-                  return _buildTextField(_instructions, idx);
-                }).toList(),
-                ElevatedButton(
-                  onPressed: () => _addField(_instructions),
-                  child: Text("Add Instruction"),
-                ),
-                SizedBox(height: 10.0),
-                Text("Preparations: "),
-                ..._preparations.asMap().entries.map((entry) {
-                  int idx = entry.key;
-                  return _buildTextField(_preparations, idx);
-                }).toList(),
-                ElevatedButton(
-                  onPressed: () => _addField(_preparations),
-                  child: Text("Add Preparation"),
-                ),
-                SizedBox(height: 10.0),
-                ElevatedButton(
-                  onPressed: handleRecipeUpload,
-                  child: Text("Cook IT"),
-                )
-              ],
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add Recipe"),
+        backgroundColor: kPrimaryColor,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("RecipeName:"),
+              TextField(
+                onChanged: (value) {
+                  recipeName = value;
+                },
+                decoration: kTextFieldDecoration,
+              ),
+              SizedBox(height: 10.0),
+              Text("Description:"),
+              TextField(
+                onChanged: (value) {
+                  recipeDescription = value;
+                },
+                decoration: kTextFieldDecoration,
+              ),
+              SizedBox(height: 10.0),
+              Text("Difficulty: "),
+              TextField(
+                onChanged: (value) {
+                  recipeDifficulty = int.parse(value);
+                },
+                decoration: kTextFieldDecoration,
+              ),
+              SizedBox(height: 10.0),
+              Text("Category:"),
+              Container(
+                child: getPicker(),
+              ),
+              SizedBox(height: 10.0),
+              Text("Image: "),
+              if (_image != null) Image.file(_image!),
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: Text("Pick an Image"),
+              ),
+              SizedBox(height: 10.0),
+              Text("Instructions: "),
+              ..._instructions.asMap().entries.map((entry) {
+                int idx = entry.key;
+                return _buildTextField(_instructions, idx);
+              }).toList(),
+              ElevatedButton(
+                onPressed: () => _addField(_instructions),
+                child: Text("Add Instruction"),
+              ),
+              SizedBox(height: 10.0),
+              Text("Preparations: "),
+              ..._preparations.asMap().entries.map((entry) {
+                int idx = entry.key;
+                return _buildTextField(_preparations, idx);
+              }).toList(),
+              ElevatedButton(
+                onPressed: () => _addField(_preparations),
+                child: Text("Add Preparation"),
+              ),
+              SizedBox(height: 10.0),
+              ElevatedButton(
+                onPressed: handleRecipeUpload,
+                child: Text("Cook IT"),
+              )
+            ],
           ),
         ),
       ),
