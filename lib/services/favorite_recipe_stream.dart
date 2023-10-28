@@ -43,15 +43,21 @@ class RecipesStream extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         }
 
-        if (snapshot.hasData) {
+        if (snapshot.hasData && snapshot.data!.exists) {
           Map<String, dynamic> data =
               snapshot.data!.data() as Map<String, dynamic>;
           List<String> favoritedRecipesIds =
               List<String>.from(data['recipes'] ?? []);
 
+          // If the list is empty, show a message
+          if (favoritedRecipesIds.isEmpty) {
+            return Text("No favorite recipes found.");
+          }
+
           return FutureBuilder<QuerySnapshot>(
             future: db
-                .collection("recipes" ?? "popularRecipes")
+                .collection("recipes" ??
+                    "popularRecipes") // Note: "popularRecipes" will never be used here.
                 .where(FieldPath.documentId, whereIn: favoritedRecipesIds)
                 .get(),
             builder: (context, snapshot) {
@@ -101,7 +107,7 @@ class RecipesStream extends StatelessWidget {
             },
           );
         }
-        return Text('Unknown state');
+        return Text('No favorite recipes found.');
       },
     );
   }

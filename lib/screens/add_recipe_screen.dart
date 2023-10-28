@@ -79,7 +79,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
     };
 
     try {
-      await db.collection("popularRecipes").add(recipe);
+      await db.collection("recipes").add(recipe);
       print("Recipe added successfully.");
     } catch (error) {
       print("Error adding recipe: $error");
@@ -181,7 +181,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                 decoration: kTextFieldDecoration,
               ),
               SizedBox(height: 10.0),
-              Text("Difficulty: "),
+              Text("Difficulty(in minutes): "),
               TextField(
                 onChanged: (value) {
                   recipeDifficulty = int.parse(value);

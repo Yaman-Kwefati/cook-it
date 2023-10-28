@@ -2,12 +2,13 @@ import 'package:cook_it/models/recipe.dart';
 import 'package:cook_it/screens/recipe_screen.dart';
 import 'package:cook_it/screens_components/icons_widgets.dart';
 import 'package:cook_it/screens_constants.dart';
+import 'package:cook_it/services/recipe_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
-class HomeRecipePost extends StatelessWidget {
+class HomeRecipePost extends StatefulWidget {
   HomeRecipePost(
       {required this.recipeDescription,
       required this.recipeDifficulty,
@@ -29,6 +30,35 @@ class HomeRecipePost extends StatelessWidget {
   final recipeOwner;
   final recipeId;
 
+  @override
+  State<HomeRecipePost> createState() => _HomeRecipePostState();
+}
+
+class _HomeRecipePostState extends State<HomeRecipePost> {
+  double? rating;
+  final RecipeManager recipeManager = RecipeManager();
+
+  Future<double> calculateRating() async {
+    final highestRating = await recipeManager.getHighestRecipeRating();
+    return widget.recipeTimesFavorited / (highestRating ?? 1) * 5;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRating();
+  }
+
+  Future<void> _fetchRating() async {
+    final highestRating = await recipeManager.getHighestRecipeRating();
+    if (mounted) {
+      // Check if the widget is still in the widget tree
+      setState(() {
+        rating = widget.recipeTimesFavorited / (highestRating ?? 1) * 5;
+      });
+    }
+  }
+
   void _showModal(BuildContext context) {
     late Color iconColor = Colors.black;
     IconData icon = CupertinoIcons.heart;
@@ -41,13 +71,13 @@ class HomeRecipePost extends StatelessWidget {
 
         return [
           WoltModalSheetPage.withSingleChild(
-            topBarTitle: Text(recipeName,
+            topBarTitle: Text(widget.recipeName,
                 style: TextStyle(
                   fontSize: 30.0,
                   fontWeight: FontWeight.bold,
                 )),
             isTopBarLayerAlwaysVisible: true,
-            leadingNavBarWidget: HeartIconButton(recipeId: recipeId),
+            leadingNavBarWidget: HeartIconButton(recipeId: widget.recipeId),
             trailingNavBarWidget: IconButton(
               icon: CircleAvatar(
                 child: Icon(
@@ -72,7 +102,7 @@ class HomeRecipePost extends StatelessWidget {
                     child: Hero(
                       tag: 'recipeImageHero',
                       child: FittedBox(
-                        child: recipeImage,
+                        child: widget.recipeImage,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -84,14 +114,14 @@ class HomeRecipePost extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("User: "),
-                          Text("$recipeOwner"),
+                          Text("${widget.recipeOwner}"),
                         ],
                       ),
                       SizedBox(
                         height: 15.0,
                       ),
                       Text(
-                        recipeDescription,
+                        widget.recipeDescription,
                         style: TextStyle(fontSize: 20.0),
                       ),
                     ],
@@ -105,7 +135,7 @@ class HomeRecipePost extends StatelessWidget {
                         child: RatingBar.builder(
                           itemSize: 25.0,
                           updateOnDrag: false,
-                          initialRating: recipeTimesFavorited,
+                          initialRating: rating ?? 0,
                           minRating: 1,
                           direction: Axis.horizontal,
                           allowHalfRating: true,
@@ -123,15 +153,15 @@ class HomeRecipePost extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       Recipe recipe = Recipe(
-                          recipeDescription: recipeDescription,
-                          recipeDifficulty: recipeDifficulty,
-                          recipeImageUrl: recipeImage,
-                          recipeInstructions: recipeInstructions,
-                          recipePreparation: recipePreparation,
-                          recipeOwner: recipeOwner,
-                          recipeName: recipeName,
-                          recipeTimesFavorited: recipeTimesFavorited,
-                          recipeId: recipeId);
+                          recipeDescription: widget.recipeDescription,
+                          recipeDifficulty: widget.recipeDifficulty,
+                          recipeImageUrl: widget.recipeImage,
+                          recipeInstructions: widget.recipeInstructions,
+                          recipePreparation: widget.recipePreparation,
+                          recipeOwner: widget.recipeOwner,
+                          recipeName: widget.recipeName,
+                          recipeTimesFavorited: widget.recipeTimesFavorited,
+                          recipeId: widget.recipeId);
                       Navigator.of(modalSheetContext).pop();
                       Navigator.push(
                           context,
@@ -181,7 +211,7 @@ class HomeRecipePost extends StatelessWidget {
             children: [
               Container(
                 height: 85,
-                child: recipeImage,
+                child: widget.recipeImage,
               ),
               SizedBox(width: 10),
               Expanded(
@@ -189,19 +219,19 @@ class HomeRecipePost extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      recipeName,
+                      widget.recipeName,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 5),
                     Text(
-                      recipeDescription,
+                      widget.recipeDescription,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(), // Apply any style you want
                     ),
                     Text("Read more", style: TextStyle(color: Colors.blue)),
                     SizedBox(height: 5),
-                    Text(recipeOwner),
+                    Text(widget.recipeOwner),
                   ],
                 ),
               ),

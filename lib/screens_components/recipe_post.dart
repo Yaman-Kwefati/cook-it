@@ -1,6 +1,7 @@
 import 'package:cook_it/screens/recipe_screen.dart';
 import 'package:cook_it/screens_components/icons_widgets.dart';
 import 'package:cook_it/screens_constants.dart';
+import 'package:cook_it/services/recipe_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -8,7 +9,7 @@ import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 import '../models/recipe.dart';
 
-class FavoriteRecipePost extends StatelessWidget {
+class FavoriteRecipePost extends StatefulWidget {
   FavoriteRecipePost(
       {required this.recipeDescription,
       required this.recipeDifficulty,
@@ -30,101 +31,33 @@ class FavoriteRecipePost extends StatelessWidget {
   final recipeOwner;
   final recipeId;
 
-  void _showModal(BuildContext context) {
-    late Color iconColor = Colors.black;
-    IconData icon = CupertinoIcons.heart;
-    // WoltModalSheet.show<void>(
-    //   context: context,
-    //   pageIndexNotifier: ValueNotifier(
-    //       0), // pageIndexNotifier is needed if there are multiple pages in the modal, but you have only one.
-    //   pageListBuilder: (modalSheetContext) {
-    //     final textTheme = Theme.of(context).textTheme;
-    //
-    //     return [
-    //       WoltModalSheetPage.withSingleChild(
-    //         topBarTitle: Text(recipeName,
-    //             style: TextStyle(
-    //               fontSize: 30.0,
-    //               fontWeight: FontWeight.bold,
-    //             )),
-    //         isTopBarLayerAlwaysVisible: true,
-    //         trailingNavBarWidget: IconButton(
-    //           icon: CircleAvatar(
-    //             child: Icon(
-    //               Icons.close,
-    //               color: Colors.black,
-    //             ),
-    //             backgroundColor: CupertinoColors.systemGrey6,
-    //           ),
-    //           onPressed: Navigator.of(modalSheetContext).pop,
-    //         ),
-    //         child: Container(
-    //           padding: const EdgeInsets.all(12.0),
-    //           child: Column(
-    //             mainAxisSize: MainAxisSize.min,
-    //             children: <Widget>[
-    //               Container(
-    //                 constraints: BoxConstraints(
-    //                   minHeight: 200, // set your desired minimum height
-    //                   maxHeight: MediaQuery.of(context).size.height *
-    //                       0.4, // e.g., 40% of screen height
-    //                 ),
-    //                 child: Hero(
-    //                   tag: 'recipeImageHero',
-    //                   child: FittedBox(
-    //                     child: recipeImage,
-    //                     fit: BoxFit.cover,
-    //                   ),
-    //                 ),
-    //               ),
-    //               SizedBox(height: 16.0),
-    //               Column(
-    //                 children: [
-    //                   Row(
-    //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                     children: [
-    //                       Text("Owner:"),
-    //                       Text("$recipeOwner"),
-    //                     ],
-    //                   ),
-    //                   SizedBox(
-    //                     height: 15.0,
-    //                   ),
-    //                   Text(
-    //                     recipeDescription,
-    //                     style: TextStyle(fontSize: 20.0),
-    //                   ),
-    //                 ],
-    //               ),
-    //               SizedBox(height: 16.0),
-    //               ElevatedButton(
-    //                 onPressed: () {
-    //
-    //                 },
-    //                 child: Text('Cook it'),
-    //                 style: ElevatedButton.styleFrom(
-    //                   textStyle: TextStyle(fontSize: 25.0),
-    //                   backgroundColor: kPrimaryColor,
-    //                   elevation: 5.0,
-    //                   padding: EdgeInsets.symmetric(horizontal: 75.0),
-    //                 ),
-    //               ),
-    //             ],
-    //           ),
-    //         ),
-    //       )
-    //     ];
-    //   },
-    //   modalTypeBuilder: (context) {
-    //     // You can set conditions for modal type based on screen size or other factors.
-    //     // For now, I am just returning a bottomSheet type.
-    //     return WoltModalType.bottomSheet;
-    //   },
-    //   onModalDismissedWithBarrierTap: () {
-    //     Navigator.pop(context);
-    //   },
-    //   // Other parameters based on your needs
-    // );
+  @override
+  State<FavoriteRecipePost> createState() => _FavoriteRecipePostState();
+}
+
+class _FavoriteRecipePostState extends State<FavoriteRecipePost> {
+  double? rating;
+  final RecipeManager recipeManager = RecipeManager();
+
+  Future<double> calculateRating() async {
+    final highestRating = await recipeManager.getHighestRecipeRating();
+    return widget.recipeTimesFavorited / (highestRating ?? 1) * 5;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRating();
+  }
+
+  Future<void> _fetchRating() async {
+    final highestRating = await recipeManager.getHighestRecipeRating();
+    if (mounted) {
+      // Check if the widget is still in the widget tree
+      setState(() {
+        rating = widget.recipeTimesFavorited / (highestRating ?? 1) * 5;
+      });
+    }
   }
 
   @override
@@ -132,15 +65,15 @@ class FavoriteRecipePost extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Recipe recipe = Recipe(
-            recipeDescription: recipeDescription,
-            recipeDifficulty: recipeDifficulty,
-            recipeImageUrl: recipeImage,
-            recipeInstructions: recipeInstructions,
-            recipePreparation: recipePreparation,
-            recipeOwner: recipeOwner,
-            recipeName: recipeName,
-            recipeTimesFavorited: recipeTimesFavorited,
-            recipeId: recipeId);
+            recipeDescription: widget.recipeDescription,
+            recipeDifficulty: widget.recipeDifficulty,
+            recipeImageUrl: widget.recipeImage,
+            recipeInstructions: widget.recipeInstructions,
+            recipePreparation: widget.recipePreparation,
+            recipeOwner: widget.recipeOwner,
+            recipeName: widget.recipeName,
+            recipeTimesFavorited: widget.recipeTimesFavorited,
+            recipeId: widget.recipeId);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -158,7 +91,7 @@ class FavoriteRecipePost extends StatelessWidget {
                 child: ClipRect(
                   child: FittedBox(
                     fit: BoxFit.cover,
-                    child: recipeImage,
+                    child: widget.recipeImage,
                   ),
                 ),
               ),
@@ -176,7 +109,7 @@ class FavoriteRecipePost extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodyMedium,
                         children: [
                           TextSpan(
-                              text: 'Time: $recipeDifficulty m',
+                              text: 'Time: ${widget.recipeDifficulty} m',
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: Colors.black,
@@ -200,7 +133,7 @@ class FavoriteRecipePost extends StatelessWidget {
                 ),
               ),
               Divider(),
-              Text("$recipeDescription"),
+              Text("${widget.recipeDescription}"),
               Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,7 +143,7 @@ class FavoriteRecipePost extends StatelessWidget {
                     child: RatingBar.builder(
                       itemSize: 25.0,
                       updateOnDrag: false,
-                      initialRating: recipeTimesFavorited,
+                      initialRating: rating ?? 0,
                       minRating: 1,
                       direction: Axis.horizontal,
                       allowHalfRating: true,

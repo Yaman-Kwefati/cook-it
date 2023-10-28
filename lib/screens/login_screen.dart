@@ -1,11 +1,11 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cook_it/services/favorite_recipe_stream.dart';
 import 'package:cook_it/screens/main_screen.dart';
 import 'package:cook_it/screens_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import '../screens_components/rounded_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:quickalert/quickalert.dart';
 
 class LoginScreen extends StatefulWidget {
   static final String id = "login_screen";
@@ -32,10 +32,17 @@ class _LoginScreenState extends State<LoginScreen> {
         _showSpinner = false;
       });
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+      if (e.message != null &&
+          e.message!.contains("INVALID_LOGIN_CREDENTIALS")) {
+        QuickAlert.show(
+          context: context,
+          type: QuickAlertType.error,
+          title: 'Oops...',
+          text: 'Email or Password are wrong...',
+        );
+        setState(() {
+          _showSpinner = false;
+        });
       }
     }
   }

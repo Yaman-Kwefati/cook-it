@@ -17,3 +17,9 @@ const kTextFieldDecoration = InputDecoration(
     borderRadius: BorderRadius.all(Radius.circular(32.0)),
   ),
 );
+
+const kRecipeTitleTextStyle =
+    TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold);
+
+const kRecipeTextFieldsTextStyle =
+    TextStyle(fontWeight: FontWeight.bold, fontStyle: FontStyle.italic);

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 class AndroidPicker extends StatefulWidget {
   List<DropdownMenuItem<String>> dropDownItems = [];
-  String selectedCategoryString = "Breakfast";
   final ValueChanged<String>? onCategorySelected;
 
   AndroidPicker({this.onCategorySelected});
@@ -14,6 +13,7 @@ class AndroidPicker extends StatefulWidget {
 }
 
 class _AndroidPickerState extends State<AndroidPicker> {
+  String selectedCategoryString = "Breakfast";
   void addItemsToDropDownItemsList() {
     for (String item in categoriesList) {
       var newItem = DropdownMenuItem(
@@ -29,13 +29,13 @@ class _AndroidPickerState extends State<AndroidPicker> {
     addItemsToDropDownItemsList();
     return DropdownButton<String>(
         items: widget.dropDownItems,
-        value: widget.selectedCategoryString,
+        value: selectedCategoryString,
         onChanged: (value) {
-          setState(() {
-            widget.selectedCategoryString = value!;
-          });
           if (widget.onCategorySelected != null) {
             widget.onCategorySelected!(value!);
+            setState(() {
+              selectedCategoryString = value!;
+            });
           }
         });
   }
@@ -43,7 +43,6 @@ class _AndroidPickerState extends State<AndroidPicker> {
 
 class IosPicker extends StatefulWidget {
   List<DropdownMenuItem<String>> dropDownItems = [];
-  String selectedCategoryString = "Breakfast";
   final ValueChanged<String>? onCategorySelected;
 
   IosPicker({this.onCategorySelected});
@@ -52,6 +51,7 @@ class IosPicker extends StatefulWidget {
 }
 
 class _IosPickerState extends State<IosPicker> {
+  String selectedCategoryString = "Breakfast";
   void _showDialog(Widget child) {
     showCupertinoModalPopup<void>(
       context: context,
@@ -80,7 +80,7 @@ class _IosPickerState extends State<IosPicker> {
         CupertinoButton(
             color: Color(0xFF162D6E),
             child: Text(
-              widget.selectedCategoryString,
+              selectedCategoryString,
               style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             onPressed: () => _showDialog(
@@ -95,13 +95,12 @@ class _IosPickerState extends State<IosPicker> {
                     ),
                     // This is called when selected item is changed.
                     onSelectedItemChanged: (int selectedItem) {
-                      setState(() {
-                        widget.selectedCategoryString =
-                            categoriesList[selectedItem];
-                      });
                       if (widget.onCategorySelected != null) {
                         widget
                             .onCategorySelected!(categoriesList[selectedItem]);
+                        setState(() {
+                          selectedCategoryString = categoriesList[selectedItem];
+                        });
                       }
                     },
                     children: List<Widget>.generate(categoriesList.length,

@@ -21,6 +21,9 @@ dependencies:
   water_drop_nav_bar: ^2.2.0
   image_picker: ^1.0.4
   searchfield: ^0.8.4
+  colorful_safe_area: ^1.0.0
+  alert: ^2.0.1
+  quickalert: ^1.0.2
 
 dev_dependencies:
   flutter_test:

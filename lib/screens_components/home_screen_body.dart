@@ -2,8 +2,10 @@ import 'package:cook_it/models/recipe.dart';
 import 'package:cook_it/models/recipe_data.dart';
 import 'package:cook_it/screens/category_recipes_screen.dart';
 import 'package:cook_it/screens_components/categories_listview.dart';
+import 'package:cook_it/screens_components/recipe_searchfield.dart';
 import 'package:cook_it/services/home_recipe_stream.dart';
 import 'package:cook_it/screens_components/home_text_row.dart';
+import 'package:cook_it/services/recipe_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,10 +29,16 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         .toList();
   }
 
+  void fetchTopRecipes() {
+    RecipeManager recipeManager = RecipeManager();
+    recipeManager.updatePopularRecipes();
+  }
+
   @override
   void initState() {
     super.initState();
     _fetchAndSetRecipes();
+    fetchTopRecipes();
   }
 
   _fetchAndSetRecipes() async {
@@ -73,16 +81,17 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SearchField<Map<String, dynamic>>(
-            suggestions: recipes.map((recipeMap) {
-              return SearchFieldListItem<Map<String, dynamic>>(
-                recipeMap[
-                    'name'], // Assuming 'recipename' is the field's name in Firebase
-                item: recipeMap,
-                child: Text(recipeMap['name']),
-              );
-            }).toList(),
-          ),
+          // SearchField<Map<String, dynamic>>(
+          //   suggestions: recipes.map((recipeMap) {
+          //     return SearchFieldListItem<Map<String, dynamic>>(
+          //       recipeMap[
+          //           'name'], // Assuming 'recipename' is the field's name in Firebase
+          //       item: recipeMap,
+          //       child: Text(recipeMap['name']),
+          //     );
+          //   }).toList(),
+          // ),
+          RecipeSearchField(onSuggestionSelected: (selectedRecipe) {}),
           HomeTextRow(
             text: 'Category',
             function: () => _showCategoriesModal(context),
